@@ -11,7 +11,6 @@ Napi::FunctionReference Tesseract::constructor;
 Tesseract::Tesseract(const Napi::CallbackInfo &info) : ObjectWrap(info)
 {
     Napi::Env env = info.Env();
-    Napi::HandleScope scope(env);
 
     if (info.Length() < 1)
     {
@@ -61,12 +60,24 @@ Napi::Value Tesseract::Greet(const Napi::CallbackInfo &info)
 void Tesseract::Init(const Napi::CallbackInfo &info)
 {
     Napi::Env env = info.Env();
-    Napi::HandleScope scope(env);
 
-    if (this->_api->Init(NULL, "eng"))
+    const char *datapath = NULL;
+    std::string language = "eng";
+
+    if (info[0].IsString())
     {
-        fprintf(stderr, "Could not initialize tesseract.\n");
-        exit(1);
+        datapath = info[0].As<Napi::String>().Utf8Value().c_str();
+    }
+
+    if (info[1].IsString())
+    {
+        language = info[1].As<Napi::String>().Utf8Value();
+    }
+
+    if (this->_api->Init(NULL, language.c_str()))
+    {
+        Napi::TypeError::New(env, "Could not initialize tesseract.")
+            .ThrowAsJavaScriptException();
     }
 }
 
@@ -89,9 +100,9 @@ void Tesseract::SetImage(const Napi::CallbackInfo &info)
 
     if (info[0].IsObject())
     {
-        LeptonicaPix *pixImage = LeptonicaPix::Unwrap(info[0].As<Napi::Object>());
-        // LeptonicaPix *pixImage = Napi::ObjectWrap<LeptonicaPix>::Unwrap(info[0].As<Napi::Object>());
-        this->_api->SetImage(pixImage->_image);
+        // LeptonicaPix *pixImage = LeptonicaPix::Unwrap(info[0].As<Napi::Object>());
+        LeptonicaPix *pixImage = Napi::ObjectWrap<LeptonicaPix>::Unwrap(info[0].As<Napi::Object>());
+        this->_api->SetImage(pixImage->Image());
     }
 
     if (info[0].IsString())

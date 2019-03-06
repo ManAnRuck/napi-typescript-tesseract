@@ -7,7 +7,7 @@ if (fs.existsSync("../build/Release")) {
 }
 
 interface ITesseractNative {
-  Init(): void;
+  Init(dataPath?: string, language?: string): void;
   SetImage(image: any): void;
   greet(strName: string): string;
   getUTF8Text(): string;
@@ -18,7 +18,7 @@ class Tesseract {
     this._addonInstance = new addon.Tesseract(name);
   }
 
-  Init() {
+  Init(dataPath?: string, language: string = "eng") {
     return this._addonInstance.Init();
   }
 

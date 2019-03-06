@@ -4,10 +4,11 @@
     "node-addon-api": "^1.1.0"
   },
   "scripts": {
+    "clean": "rimraf dist build",
     "pretest": "tsc",
     "test": "node --napi-modules ./test/test_binding.js",
-    "build": "node-gyp rebuild -C tesseract-native",
-    "build:dev": "node-gyp --debug rebuild -C tesseract-native"
+    "build": "node-gyp rebuild",
+    "build:dev": "node-gyp --debug rebuild"
   },
   "gypfile": true,
   "name": "tesseract",
@@ -23,6 +24,7 @@
   "description": "",
   "devDependencies": {
     "@types/node": "^7.0.22",
+    "rimraf": "^2.6.3",
     "typescript": "^2.3.3"
   }
 }

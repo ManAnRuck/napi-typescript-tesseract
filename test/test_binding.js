@@ -29,7 +29,7 @@ function testGetUTF8TextFromFilePath()
 function testGetUTF8TextFromImageObject()
 {
     const tesseract = new Tesseract("mr-yeoman");
-    tesseract.Init();
+    tesseract.Init(null, "eng");
 
     const image = new Image(`${__dirname}/image.png`)
     console.log(image)

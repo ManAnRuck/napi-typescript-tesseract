@@ -81,23 +81,28 @@ void Tesseract::SetImage(const Napi::CallbackInfo &info)
             .ThrowAsJavaScriptException();
     }
 
-    if (!info[0].IsObject())
+    if (!info[0].IsObject() && !info[0].IsString())
     {
-        Napi::TypeError::New(env, "Argument have to be an Image")
+        Napi::TypeError::New(env, "Argument have to be an Image Path or Object")
             .ThrowAsJavaScriptException();
     }
 
-    LeptonicaPix *pixImage = LeptonicaPix::Unwrap(info[0].As<Napi::Object>());
-    // LeptonicaPix *pixImage = Napi::ObjectWrap<LeptonicaPix>::Unwrap(info[0].As<Napi::Object>());
+    if (info[0].IsObject())
+    {
+        LeptonicaPix *pixImage = LeptonicaPix::Unwrap(info[0].As<Napi::Object>());
+        // LeptonicaPix *pixImage = Napi::ObjectWrap<LeptonicaPix>::Unwrap(info[0].As<Napi::Object>());
+        this->_api->SetImage(pixImage->Image());
+    }
 
-    // LeptonicaPix *pixImage = info[0].As<LeptonicaPix *>();
+    if (info[0].IsString())
+    {
+        std::string file_path_input = info[0].As<Napi::String>().Utf8Value();
 
-    printf("hoho");
+        // const char *file_path = file_path_input.c_str();
+        std::vector<char> cstr(file_path_input.c_str(), file_path_input.c_str() + file_path_input.size() + 1);
 
-    // Open input image with leptonica library
-    // Pix *image = pixRead("/Users/manuelruck/Desktop/image.png");
-
-    this->_api->SetImage(pixImage->Image());
+        this->_api->SetImage(pixRead(&cstr[0]));
+    }
 }
 
 Napi::Value Tesseract::GetUTF8Text(const Napi::CallbackInfo &info)

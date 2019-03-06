@@ -18,16 +18,24 @@ function createImage()
     console.log("Image:", image);
 }
 
-function testGetUTF8Text()
+function testGetUTF8TextFromFilePath()
 {
-    const instance = new Tesseract("mr-yeoman");
-    instance.Init();
+    const tesseract = new Tesseract("mr-yeoman");
+    tesseract.Init();
+    tesseract.SetImage(`${__dirname}/image.png`);
+    console.log(tesseract.getUTF8Text());
+}
+
+function testGetUTF8TextFromImageObject()
+{
+    const tesseract = new Tesseract("mr-yeoman");
+    tesseract.Init();
 
     const image = new Image("/Users/manuelruck/Desktop/image.png")
+    console.log(image)
 
-    instance.SetImage(image);
-    // assert(instance.getUTF8Text, "The expected method is not defined");
-    // console.log(instance.getUTF8Text());
+    tesseract.SetImage(image);
+    // console.log(tesseract.getUTF8Text());
 }
 
 function testInvalidParams()
@@ -37,7 +45,8 @@ function testInvalidParams()
 
 assert.doesNotThrow(testBasic, undefined, "testBasic threw an expection");
 assert.doesNotThrow(createImage, undefined, "createImage threw an expection");
-assert.doesNotThrow(testGetUTF8Text, undefined, "testGetUTF8Text threw an expection");
+assert.doesNotThrow(testGetUTF8TextFromFilePath, undefined, "testGetUTF8TextFromFilePath threw an expection");
+assert.doesNotThrow(testGetUTF8TextFromImageObject, undefined, "testGetUTF8TextFromImageObject threw an expection");
 assert.throws(testInvalidParams, undefined, "testInvalidParams didn't throw");
 
 console.log("Tests passed- everything looks OK!");

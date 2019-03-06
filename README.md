@@ -11,6 +11,8 @@ not on npm now (comming soon), but u can localy link.
 ### Usage
 
 ```js
+    import { Tesseract, Image } from "napi-typescript-tesseract";
+
     const tesseract = new Tesseract();
     tesseract.Init(null, "eng");
 

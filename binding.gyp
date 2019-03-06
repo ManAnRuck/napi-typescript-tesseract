@@ -2,7 +2,7 @@
   'targets': [
     {
       'target_name': 'tesseract-native',
-      'sources': [ 'src/tesseract.cc' ],
+      'sources': [ 'src/addon.cc', 'src/tesseract.cc', 'src/leptonica_pix.cc' ],
       'include_dirs': ["<!@(node -p \"require('node-addon-api').include\")"],
       'dependencies': ["<!(node -p \"require('node-addon-api').gyp\")"],
       'cflags!': [ '-fno-exceptions' ],

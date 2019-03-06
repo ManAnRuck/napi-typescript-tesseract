@@ -31,11 +31,11 @@ function testGetUTF8TextFromImageObject()
     const tesseract = new Tesseract("mr-yeoman");
     tesseract.Init();
 
-    const image = new Image("/Users/manuelruck/Desktop/image.png")
+    const image = new Image(`${__dirname}/image.png`)
     console.log(image)
 
     tesseract.SetImage(image);
-    // console.log(tesseract.getUTF8Text());
+    console.log(tesseract.getUTF8Text());
 }
 
 function testInvalidParams()

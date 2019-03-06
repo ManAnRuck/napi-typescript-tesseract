@@ -91,7 +91,7 @@ void Tesseract::SetImage(const Napi::CallbackInfo &info)
     {
         LeptonicaPix *pixImage = LeptonicaPix::Unwrap(info[0].As<Napi::Object>());
         // LeptonicaPix *pixImage = Napi::ObjectWrap<LeptonicaPix>::Unwrap(info[0].As<Napi::Object>());
-        this->_api->SetImage(pixImage->Image());
+        this->_api->SetImage(pixImage->_image);
     }
 
     if (info[0].IsString())

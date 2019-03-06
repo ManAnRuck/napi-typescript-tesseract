@@ -12,49 +12,7 @@ Tesseract::Tesseract(const Napi::CallbackInfo &info) : ObjectWrap(info)
 {
     Napi::Env env = info.Env();
 
-    if (info.Length() < 1)
-    {
-        Napi::TypeError::New(env, "Wrong number of arguments")
-            .ThrowAsJavaScriptException();
-        return;
-    }
-
-    if (!info[0].IsString())
-    {
-        Napi::TypeError::New(env, "You need to name yourself")
-            .ThrowAsJavaScriptException();
-        return;
-    }
-
     this->_api = new tesseract::TessBaseAPI();
-
-    this->_greeterName = info[0].As<Napi::String>().Utf8Value();
-}
-
-Napi::Value Tesseract::Greet(const Napi::CallbackInfo &info)
-{
-    Napi::Env env = info.Env();
-
-    if (info.Length() < 1)
-    {
-        Napi::TypeError::New(env, "Wrong number of arguments")
-            .ThrowAsJavaScriptException();
-        return env.Null();
-    }
-
-    if (!info[0].IsString())
-    {
-        Napi::TypeError::New(env, "You need to introduce yourself to greet")
-            .ThrowAsJavaScriptException();
-        return env.Null();
-    }
-
-    // Napi::String name = info[0].As<Napi::String>();
-
-    // printf("Hello %s\n", name.Utf8Value().c_str());
-    // printf("I'm %s\n", this->_greeterName.c_str());
-
-    return Napi::String::New(env, this->_greeterName);
 }
 
 void Tesseract::Init(const Napi::CallbackInfo &info)
@@ -136,7 +94,6 @@ Napi::Object Tesseract::Initialize(Napi::Env env, Napi::Object exports)
                                       {
                                           Tesseract::InstanceMethod("Init", &Tesseract::Init),
                                           Tesseract::InstanceMethod("SetImage", &Tesseract::SetImage),
-                                          Tesseract::InstanceMethod("greet", &Tesseract::Greet),
                                           Tesseract::InstanceMethod("getUTF8Text", &Tesseract::GetUTF8Text),
                                       });
 

@@ -8,7 +8,7 @@
     "pretest": "tsc",
     "test": "node --napi-modules ./test/test_binding.js",
     "build": "node-gyp rebuild",
-    "build:dev": "node-gyp --debug rebuild"
+    "build:dev": "npm run clean && npm run pretest && node-gyp --debug rebuild"
   },
   "gypfile": true,
   "name": "tesseract",

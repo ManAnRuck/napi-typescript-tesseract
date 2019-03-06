@@ -9,13 +9,12 @@ if (fs.existsSync("../build/Release")) {
 interface ITesseractNative {
   Init(dataPath?: string, language?: string): void;
   SetImage(image: any): void;
-  greet(strName: string): string;
   getUTF8Text(): string;
 }
 
 class Tesseract {
-  constructor(name: string) {
-    this._addonInstance = new addon.Tesseract(name);
+  constructor() {
+    this._addonInstance = new addon.Tesseract();
   }
 
   Init(dataPath?: string, language: string = "eng") {
@@ -24,10 +23,6 @@ class Tesseract {
 
   SetImage(image: any) {
     return this._addonInstance.SetImage(image);
-  }
-
-  greet(strName: string) {
-    return this._addonInstance.greet(strName);
   }
 
   getUTF8Text() {

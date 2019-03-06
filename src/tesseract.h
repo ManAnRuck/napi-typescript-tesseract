@@ -11,7 +11,6 @@ class Tesseract : public Napi::ObjectWrap<Tesseract>
     void Init(const Napi::CallbackInfo &);
     Napi::Value GetUTF8Text(const Napi::CallbackInfo &);
     void SetImage(const Napi::CallbackInfo &);
-    Napi::Value Greet(const Napi::CallbackInfo &);
 
     static Napi::Function GetClass(Napi::Env);
 

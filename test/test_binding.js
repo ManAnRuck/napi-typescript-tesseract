@@ -1,5 +1,7 @@
-const Tesseract = require("../dist/binding.js");
+const { Tesseract, Image } = require("../dist/binding.js");
 const assert = require("assert");
+
+console.log({Tesseract, Image})
 
 assert(Tesseract, "The expected module is undefined");
 
@@ -10,14 +12,30 @@ function testBasic()
     assert.strictEqual(instance.greet("kermit"), "mr-yeoman", "Unexpected value returned");
 }
 
-function testGetUTF8Text()
+function createImage()
 {
-    const instance = new Tesseract("mr-yeoman");
-    instance.Init();
-    instance.SetImage();
-    assert(instance.getUTF8Text, "The expected method is not defined");
-    console.log(instance.getUTF8Text());
-    delete instance;
+    const image = new Image("/Users/manuelruck/Desktop/image.png");
+    console.log("Image:", image);
+}
+
+function testGetUTF8TextFromFilePath()
+{
+    const tesseract = new Tesseract("mr-yeoman");
+    tesseract.Init();
+    tesseract.SetImage(`${__dirname}/image.png`);
+    console.log(tesseract.getUTF8Text());
+}
+
+function testGetUTF8TextFromImageObject()
+{
+    const tesseract = new Tesseract("mr-yeoman");
+    tesseract.Init(null, "eng");
+
+    const image = new Image(`${__dirname}/image.png`)
+    console.log(image)
+
+    tesseract.SetImage(image);
+    console.log(tesseract.getUTF8Text());
 }
 
 function testInvalidParams()
@@ -26,7 +44,9 @@ function testInvalidParams()
 }
 
 assert.doesNotThrow(testBasic, undefined, "testBasic threw an expection");
-assert.doesNotThrow(testGetUTF8Text, undefined, "testGetUTF8Text threw an expection");
+assert.doesNotThrow(createImage, undefined, "createImage threw an expection");
+assert.doesNotThrow(testGetUTF8TextFromFilePath, undefined, "testGetUTF8TextFromFilePath threw an expection");
+assert.doesNotThrow(testGetUTF8TextFromImageObject, undefined, "testGetUTF8TextFromImageObject threw an expection");
 assert.throws(testInvalidParams, undefined, "testInvalidParams didn't throw");
 
 console.log("Tests passed- everything looks OK!");

@@ -5,8 +5,11 @@ if (fs.existsSync("../build/Release")) {
 } else {
   addon = require("../build/Debug/tesseract-native");
 }
-// const Tesseract = require("./tesseract");
-import Tesseract = require("./tesseract");
-import Image = require("./image");
 
-export = { Tesseract, Image };
+class Image {
+  constructor(filePath: string) {
+    return new addon.Image(filePath);
+  }
+}
+
+export = Image;

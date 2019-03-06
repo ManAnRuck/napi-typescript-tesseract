@@ -2,6 +2,7 @@
 #include <leptonica/allheaders.h>
 
 #include "tesseract.h"
+#include "leptonica_pix.h"
 
 using namespace Napi;
 
@@ -58,24 +59,61 @@ Napi::Value Tesseract::Greet(const Napi::CallbackInfo &info)
 
 void Tesseract::Init(const Napi::CallbackInfo &info)
 {
-    char *outText;
     Napi::Env env = info.Env();
 
-    if (this->_api->Init(NULL, "eng"))
+    const char *datapath = NULL;
+    std::string language = "eng";
+
+    if (info[0].IsString())
     {
-        fprintf(stderr, "Could not initialize tesseract.\n");
-        exit(1);
+        datapath = info[0].As<Napi::String>().Utf8Value().c_str();
+    }
+
+    if (info[1].IsString())
+    {
+        language = info[1].As<Napi::String>().Utf8Value();
+    }
+
+    if (this->_api->Init(NULL, language.c_str()))
+    {
+        Napi::TypeError::New(env, "Could not initialize tesseract.")
+            .ThrowAsJavaScriptException();
     }
 }
 
 void Tesseract::SetImage(const Napi::CallbackInfo &info)
 {
-    char *outText;
     Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
 
-    // Open input image with leptonica library
-    Pix *image = pixRead("/Users/manuelruck/Desktop/image.png");
-    this->_api->SetImage(image);
+    if (info.Length() < 1)
+    {
+        Napi::TypeError::New(env, "Wrong number of arguments")
+            .ThrowAsJavaScriptException();
+    }
+
+    if (!info[0].IsObject() && !info[0].IsString())
+    {
+        Napi::TypeError::New(env, "Argument have to be an Image Path or Object")
+            .ThrowAsJavaScriptException();
+    }
+
+    if (info[0].IsObject())
+    {
+        // LeptonicaPix *pixImage = LeptonicaPix::Unwrap(info[0].As<Napi::Object>());
+        LeptonicaPix *pixImage = Napi::ObjectWrap<LeptonicaPix>::Unwrap(info[0].As<Napi::Object>());
+        this->_api->SetImage(pixImage->Image());
+    }
+
+    if (info[0].IsString())
+    {
+        std::string file_path_input = info[0].As<Napi::String>().Utf8Value();
+
+        // const char *file_path = file_path_input.c_str();
+        std::vector<char> cstr(file_path_input.c_str(), file_path_input.c_str() + file_path_input.size() + 1);
+
+        this->_api->SetImage(pixRead(&cstr[0]));
+    }
 }
 
 Napi::Value Tesseract::GetUTF8Text(const Napi::CallbackInfo &info)
@@ -86,36 +124,33 @@ Napi::Value Tesseract::GetUTF8Text(const Napi::CallbackInfo &info)
     outText = this->_api->GetUTF8Text();
     // printf("OCR output:\n%s", outText);
 
-    return Napi::String::New(env, outText);
-}
+    this->_api->End();
 
-Napi::Function Tesseract::GetClass(Napi::Env env)
-{
-    return DefineClass(env, "Tesseract",
-                       {
-                           Tesseract::InstanceMethod("Init", &Tesseract::Init),
-                           Tesseract::InstanceMethod("SetImage", &Tesseract::SetImage),
-                           Tesseract::InstanceMethod("greet", &Tesseract::Greet),
-                           Tesseract::InstanceMethod("getUTF8Text", &Tesseract::GetUTF8Text),
-                       });
+    return Napi::String::New(env, outText);
 }
 
 Napi::Object Tesseract::Initialize(Napi::Env env, Napi::Object exports)
 {
-    Napi::Function func = Tesseract::GetClass(env);
+    Napi::HandleScope scope(env);
+    Napi::Function func = DefineClass(env, "Tesseract",
+                                      {
+                                          Tesseract::InstanceMethod("Init", &Tesseract::Init),
+                                          Tesseract::InstanceMethod("SetImage", &Tesseract::SetImage),
+                                          Tesseract::InstanceMethod("greet", &Tesseract::Greet),
+                                          Tesseract::InstanceMethod("getUTF8Text", &Tesseract::GetUTF8Text),
+                                      });
 
     constructor = Napi::Persistent(func);
     constructor.SuppressDestruct();
 
-    Napi::String name = Napi::String::New(env, "Tesseract");
-    exports.Set(name, func);
+    exports.Set("Tesseract", func);
     return exports;
 }
 
-Napi::Object Init(Napi::Env env, Napi::Object exports)
-{
-    Tesseract::Initialize(env, exports);
-    return exports;
-}
+// Napi::Object Init(Napi::Env env, Napi::Object exports)
+// {
+//     Tesseract::Initialize(env, exports);
+//     return exports;
+// }
 
-NODE_API_MODULE(addon, Init)
+// NODE_API_MODULE(addon, Init)

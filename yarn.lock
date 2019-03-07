@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@tessdata/deu@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@tessdata/deu/-/deu-1.0.0.tgz#368864e018c1851019561585f479c48443ecdf3a"
+  integrity sha512-SdSvMJzQgZYkHbwSVQLo2CREQdMec2ugaFHeN0l1yEIJELkyHrQTeGT8A02unyqdnuK4wxsHi8nFmVOD1GAfcQ==
+
 "@types/node@^7.0.22":
   version "7.10.5"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-7.10.5.tgz#6831006b2c87441d69e79b37ae9bc03246dfb379"

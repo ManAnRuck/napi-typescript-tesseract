@@ -1,3 +1,5 @@
+const path = require("path");
+
 let addon: any;
 var fs = require("fs");
 if (fs.existsSync("../build/Release")) {
@@ -18,7 +20,16 @@ class Tesseract {
   }
 
   Init(dataPath?: string, language: string = "eng") {
-    return this._addonInstance.Init();
+    let tessDataPath = dataPath;
+    if (
+      tessDataPath &&
+      path.basename(path.dirname(tessDataPath)) === "@tessdata"
+    ) {
+      // tessDataPath = path.dirname(tessDataPath);
+      console.log("the path 1", tessDataPath);
+      console.log("the path 2", path.basename(tessDataPath));
+    }
+    return this._addonInstance.Init(tessDataPath, language);
   }
 
   SetImage(image: any) {

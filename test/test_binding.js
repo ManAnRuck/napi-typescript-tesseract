@@ -1,5 +1,6 @@
 const { Tesseract, Image } = require("../dist/binding.js");
 const assert = require("assert");
+const {langPath} = require('@tessdata/deu');
 
 console.log({Tesseract, Image})
 
@@ -22,7 +23,8 @@ function testGetUTF8TextFromFilePath()
 function testGetUTF8TextFromImageObject()
 {
     const tesseract = new Tesseract();
-    tesseract.Init(null, "eng");
+    console.log(langPath)
+    tesseract.Init(langPath, "deu");
 
     const image = new Image(`${__dirname}/image.png`)
 

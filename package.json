@@ -23,6 +23,7 @@
   "license": "MIT",
   "description": "",
   "devDependencies": {
+    "@tessdata/deu": "^1.0.0",
     "@types/node": "^7.0.22",
     "rimraf": "^2.6.3",
     "typescript": "^2.3.3"

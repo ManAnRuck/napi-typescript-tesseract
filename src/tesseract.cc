@@ -1,5 +1,6 @@
 #include <tesseract/baseapi.h>
 #include <leptonica/allheaders.h>
+#include <string>
 
 #include "tesseract.h"
 #include "leptonica_pix.h"
@@ -15,24 +16,37 @@ Tesseract::Tesseract(const Napi::CallbackInfo &info) : ObjectWrap(info)
     this->_api = new tesseract::TessBaseAPI();
 }
 
+Tesseract::~Tesseract()
+{
+    // this isn't called
+    printf("destructor Tesseract::~Tesseract \n");
+    this->_api->End();
+}
+
 void Tesseract::Init(const Napi::CallbackInfo &info)
 {
     Napi::Env env = info.Env();
 
-    const char *datapath = NULL;
     std::string language = "eng";
-
-    if (info[0].IsString())
-    {
-        datapath = info[0].As<Napi::String>().Utf8Value().c_str();
-    }
+    const char *datapath;
 
     if (info[1].IsString())
     {
         language = info[1].As<Napi::String>().Utf8Value();
     }
 
-    if (this->_api->Init(NULL, language.c_str()))
+    if (info[0].IsString())
+    {
+        // Utf8Value returns std::string
+        datapath = info[0].As<Napi::String>().Utf8Value().c_str();
+    }
+    else
+    {
+        datapath = NULL;
+    }
+    // datapath should be NULL or the given path from info[0]
+    // int tesseract::TessBaseAPI::Init(const char *datapath, const char *language)
+    if (this->_api->Init(datapath, language.c_str()))
     {
         Napi::TypeError::New(env, "Could not initialize tesseract.")
             .ThrowAsJavaScriptException();

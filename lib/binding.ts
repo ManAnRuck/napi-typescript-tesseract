@@ -8,5 +8,6 @@ if (fs.existsSync("../build/Release")) {
 // const Tesseract = require("./tesseract");
 import Tesseract = require("./tesseract");
 import Image = require("./image");
+import PdfRenderer = require("./pdfRenderer");
 
-export = { Tesseract, Image };
+export = { Tesseract, Image, PdfRenderer };

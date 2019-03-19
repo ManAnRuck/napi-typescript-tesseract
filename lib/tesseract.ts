@@ -1,3 +1,5 @@
+const path = require("path");
+
 let addon: any;
 var fs = require("fs");
 if (fs.existsSync("../build/Release")) {
@@ -10,6 +12,12 @@ interface ITesseractNative {
   Init(dataPath?: string, language?: string): void;
   SetImage(image: any): void;
   getUTF8Text(): string;
+  ProcessPages(
+    imagePath: string,
+    retryConfig: any,
+    renderer: any,
+    timeout: number
+  ): boolean;
 }
 
 class Tesseract {
@@ -18,7 +26,16 @@ class Tesseract {
   }
 
   Init(dataPath?: string, language: string = "eng") {
-    return this._addonInstance.Init();
+    let tessDataPath = dataPath;
+    if (
+      tessDataPath &&
+      path.basename(path.dirname(tessDataPath)) === "@tessdata"
+    ) {
+      // tessDataPath = path.dirname(tessDataPath);
+      console.log("the path 1", tessDataPath);
+      console.log("the path 2", path.basename(tessDataPath));
+    }
+    return this._addonInstance.Init(tessDataPath, language);
   }
 
   SetImage(image: any) {
@@ -27,6 +44,25 @@ class Tesseract {
 
   getUTF8Text() {
     return this._addonInstance.getUTF8Text();
+  }
+
+  ProcessPages({
+    imagePath,
+    retryConfig = null,
+    timeout = 5000,
+    renderer
+  }: {
+    imagePath: string;
+    retryConfig?: any;
+    timeout?: number;
+    renderer: any;
+  }) {
+    return this._addonInstance.ProcessPages(
+      imagePath,
+      retryConfig,
+      timeout,
+      renderer
+    );
   }
 
   // private members

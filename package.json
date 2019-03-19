@@ -1,7 +1,10 @@
 {
-  "main": "lib/binding.js",
+  "main": "dist/binding.js",
   "dependencies": {
     "node-addon-api": "^1.1.0"
+  },
+  "repository": {
+    "url": ""
   },
   "scripts": {
     "clean": "rimraf dist build",
@@ -11,7 +14,7 @@
     "build:dev": "npm run clean && npm run pretest && node-gyp --debug rebuild"
   },
   "gypfile": true,
-  "name": "tesseract",
+  "name": "napi-tesseract",
   "version": "1.0.0",
   "keywords": [
     "n-api",

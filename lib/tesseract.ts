@@ -12,6 +12,12 @@ interface ITesseractNative {
   Init(dataPath?: string, language?: string): void;
   SetImage(image: any): void;
   getUTF8Text(): string;
+  ProcessPages(
+    imagePath: string,
+    retryConfig: any,
+    renderer: any,
+    timeout: number
+  ): boolean;
 }
 
 class Tesseract {
@@ -38,6 +44,25 @@ class Tesseract {
 
   getUTF8Text() {
     return this._addonInstance.getUTF8Text();
+  }
+
+  ProcessPages({
+    imagePath,
+    retryConfig = null,
+    timeout = 5000,
+    renderer
+  }: {
+    imagePath: string;
+    retryConfig?: any;
+    timeout?: number;
+    renderer: any;
+  }) {
+    return this._addonInstance.ProcessPages(
+      imagePath,
+      retryConfig,
+      timeout,
+      renderer
+    );
   }
 
   // private members

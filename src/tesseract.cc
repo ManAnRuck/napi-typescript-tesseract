@@ -2,6 +2,8 @@
 #include <leptonica/allheaders.h>
 #include <string>
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 #include "tesseract.h"
 #include "leptonica_pix.h"
@@ -54,6 +56,7 @@ void Tesseract::Init(const Napi::CallbackInfo &info)
 void Tesseract::ProcessPages(const Napi::CallbackInfo &info)
 {
     Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
 
     PdfRenderer *renderer;
     std::string input_image = "";
@@ -88,6 +91,7 @@ void Tesseract::ProcessPages(const Napi::CallbackInfo &info)
         Napi::TypeError::New(env, "Error during processing.")
             .ThrowAsJavaScriptException();
     }
+    return;
 }
 
 void Tesseract::SetImage(const Napi::CallbackInfo &info)

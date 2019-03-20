@@ -1,8 +1,7 @@
 {
-  "main": "dist/binding.js",
-  "dependencies": {
-    "node-addon-api": "^1.1.0"
-  },
+  "main": "dist/lib/binding.js",
+  "name": "napi-tesseract",
+  "version": "0.0.1",
   "homepage": "https://github.com/ReggaePanda/napi-typescript-tesseract",
   "repository": {
     "type": "git",
@@ -10,14 +9,13 @@
   },
   "scripts": {
     "clean": "rimraf dist build",
-    "pretest": "tsc",
-    "test": "node --napi-modules ./test/test_binding.js",
+    "copyImage": "cp ./test/image.png ./dist/test/image.png",
+    "pretest": "tsc && yarn copyImage",
+    "test": "node --napi-modules ./dist/test/test_binding.js",
     "build": "node-gyp rebuild",
     "build:dev": "npm run clean && npm run pretest && node-gyp --debug rebuild"
   },
   "gypfile": true,
-  "name": "napi-tesseract",
-  "version": "1.0.0",
   "keywords": [
     "n-api",
     "tesseract",
@@ -27,6 +25,9 @@
   "author": "Manuel Ruck",
   "license": "MIT",
   "description": "",
+  "dependencies": {
+    "node-addon-api": "^1.1.0"
+  },
   "devDependencies": {
     "@tessdata/deu": "^1.0.0",
     "@types/node": "^7.0.22",

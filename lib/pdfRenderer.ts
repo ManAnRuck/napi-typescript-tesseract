@@ -1,17 +1,15 @@
-import { basename, dirname } from "path";
+import { dirname } from "path";
 
-let addon: any;
-var fs = require("fs");
-if (fs.existsSync("../build/Release")) {
-  addon = require("../build/Release/tesseract-native");
-} else {
-  addon = require("../build/Debug/tesseract-native");
-}
+const buildType = require("fs")
+  .readdirSync(require("path").join(dirname(dirname(__dirname)), "build"))
+  .filter((item: string) => item === "Debug" || item === "Release")[0];
+
+const addon = require(`../../build/${buildType}/tesseract-native`);
 
 class PdfRenderer {
   constructor({
     outputBase,
-    dataPath = `${dirname(__dirname)}/`,
+    dataPath = `${dirname(dirname(__dirname))}/`,
     textOnly = false
   }: {
     outputBase: string;

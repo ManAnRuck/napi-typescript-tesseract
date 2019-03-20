@@ -4,7 +4,7 @@
     "lib": ["esnext"],
     "module": "commonjs",
     "outDir": "./dist",
-    "rootDir": "./lib",
+    "rootDirs": ["./lib", "test"],
     "strict": true,
     "target": "es6",
     "types": ["node"],

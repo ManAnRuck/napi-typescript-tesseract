@@ -1,12 +1,11 @@
-const path = require("path");
+import { dirname, basename } from "path";
+import gunzip from "./gunzip";
 
-let addon: any;
-var fs = require("fs");
-if (fs.existsSync("../build/Release")) {
-  addon = require("../build/Release/tesseract-native");
-} else {
-  addon = require("../build/Debug/tesseract-native");
-}
+const buildType = require("fs")
+  .readdirSync(require("path").join(dirname(dirname(__dirname)), "build"))
+  .filter((item: string) => item === "Debug" || item === "Release")[0];
+
+const addon = require(`../../build/${buildType}/tesseract-native`);
 
 interface ITesseractNative {
   Init(dataPath?: string, language?: string): void;
@@ -27,13 +26,15 @@ class Tesseract {
 
   Init(dataPath?: string, language: string = "eng") {
     let tessDataPath = dataPath;
-    if (
-      tessDataPath &&
-      path.basename(path.dirname(tessDataPath)) === "@tessdata"
-    ) {
-      // tessDataPath = path.dirname(tessDataPath);
+    if (tessDataPath && basename(dirname(tessDataPath)) === "@tessdata") {
+      // tessDataPath = dirname(tessDataPath);
       console.log("the path 1", tessDataPath);
-      console.log("the path 2", path.basename(tessDataPath));
+      console.log("the path 2", basename(tessDataPath));
+      console.log("the path 3", `${tessDataPath}/deu.traineddata.gz`);
+      gunzip(
+        `${tessDataPath}/deu.traineddata.gz`,
+        `${tessDataPath}/deu.traineddata`
+      );
     }
     return this._addonInstance.Init(tessDataPath, language);
   }

@@ -10,7 +10,7 @@
       "name": "Launch Program",
       "preLaunchTask": "npm: build:dev",
       "program": "node",
-      "args": ["${workspaceFolder}/test/test_binding.js"],
+      "args": ["${workspaceFolder}/dist/test/test_binding.js"],
       "terminal": "integrated",
       "internalConsoleOptions": "neverOpen"
     }

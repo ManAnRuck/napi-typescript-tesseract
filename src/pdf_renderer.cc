@@ -37,11 +37,23 @@ PdfRenderer::PdfRenderer(const Napi::CallbackInfo &info) : Napi::ObjectWrap<PdfR
     this->_renderer = new tesseract::TessPDFRenderer(outputPath.c_str(), datapath.c_str(), textonly);
 }
 
+PdfRenderer::~PdfRenderer()
+{
+    this->_renderer->EndDocument();
+}
+
+void PdfRenderer::EndDocument(const Napi::CallbackInfo &info)
+{
+    this->_renderer->EndDocument();
+}
+
 Napi::Object PdfRenderer::Initialize(Napi::Env env, Napi::Object exports)
 {
     Napi::HandleScope scope(env);
 
-    Napi::Function func = DefineClass(env, "PdfRenderer", {});
+    Napi::Function func = DefineClass(env, "PdfRenderer", {
+                                                              PdfRenderer::InstanceMethod("EndDocument", &PdfRenderer::EndDocument),
+                                                          });
 
     constructor = Napi::Persistent(func);
     constructor.SuppressDestruct();

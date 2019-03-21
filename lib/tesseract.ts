@@ -11,6 +11,7 @@ interface ITesseractNative {
   Init(dataPath?: string, language?: string): void;
   SetImage(image: any): void;
   getUTF8Text(): string;
+  End(): void;
   ProcessPages(
     imagePath: string,
     retryConfig: any,
@@ -45,6 +46,10 @@ class Tesseract {
 
   getUTF8Text() {
     return this._addonInstance.getUTF8Text();
+  }
+
+  End() {
+    return this._addonInstance.End();
   }
 
   ProcessPages({

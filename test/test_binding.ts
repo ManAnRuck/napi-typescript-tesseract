@@ -17,6 +17,7 @@ function testGetUTF8TextFromFilePath() {
   tesseract.Init();
   tesseract.SetImage(`${__dirname}/image.png`);
   console.log(tesseract.getUTF8Text());
+  tesseract.End();
 }
 
 function testGetUTF8TextFromImageObject() {
@@ -27,6 +28,7 @@ function testGetUTF8TextFromImageObject() {
 
   tesseract.SetImage(image);
   console.log(tesseract.getUTF8Text());
+  tesseract.End();
 }
 
 function testSearchablePdf() {
@@ -39,6 +41,8 @@ function testSearchablePdf() {
     imagePath: `${__dirname}/image.png`,
     renderer: pdfRenderer
   });
+  pdfRenderer.EndDocument();
+  tesseract.End();
 }
 
 assert.doesNotThrow(createImage, undefined, "createImage threw an expection");

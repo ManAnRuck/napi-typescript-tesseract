@@ -18,6 +18,10 @@ class PdfRenderer {
   }) {
     return new addon.PdfRenderer(outputBase, dataPath, textOnly);
   }
+
+  EndDocument() {
+    this.EndDocument();
+  }
 }
 
 export = PdfRenderer;

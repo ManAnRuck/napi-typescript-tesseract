@@ -20,7 +20,6 @@ Tesseract::Tesseract(const Napi::CallbackInfo &info) : ObjectWrap(info)
 
 Tesseract::~Tesseract()
 {
-    // this isn't called
     this->_api->End();
 }
 
@@ -85,7 +84,14 @@ void Tesseract::ProcessPages(const Napi::CallbackInfo &info)
     }
     // const char *input_image = "/Users/manuelruck/Desktop/image.png";
     const char *retry_config = nullptr;
-    bool succeed = this->_api->ProcessPages(input_image.c_str(), retry_config, timeout_ms, renderer->_renderer);
+
+    renderer->_renderer->BeginDocument("Document");
+    bool succeed = this->_api->ProcessPages(input_image.c_str(), retry_config, 0, renderer->_renderer);
+    if (renderer->_renderer->EndDocument())
+    {
+        this->_api->End();
+    }
+
     if (!succeed)
     {
         Napi::TypeError::New(env, "Error during processing.")
@@ -139,6 +145,11 @@ Napi::Value Tesseract::GetUTF8Text(const Napi::CallbackInfo &info)
     return Napi::String::New(env, outText);
 }
 
+void Tesseract::End(const Napi::CallbackInfo &info)
+{
+    this->_api->End();
+}
+
 Napi::Object Tesseract::Initialize(Napi::Env env, Napi::Object exports)
 {
     Napi::HandleScope scope(env);
@@ -148,6 +159,7 @@ Napi::Object Tesseract::Initialize(Napi::Env env, Napi::Object exports)
                                           Tesseract::InstanceMethod("SetImage", &Tesseract::SetImage),
                                           Tesseract::InstanceMethod("ProcessPages", &Tesseract::ProcessPages),
                                           Tesseract::InstanceMethod("getUTF8Text", &Tesseract::GetUTF8Text),
+                                          Tesseract::InstanceMethod("End", &Tesseract::End),
                                       });
 
     constructor = Napi::Persistent(func);

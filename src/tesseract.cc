@@ -100,6 +100,68 @@ void Tesseract::ProcessPages(const Napi::CallbackInfo &info)
     return;
 }
 
+void Tesseract::ProcessPage(const Napi::CallbackInfo &info)
+{
+    Napi::Env env = info.Env();
+    Napi::HandleScope scope(env);
+
+    LeptonicaPix *pixImage;
+    PdfRenderer *renderer;
+    std::string input_image;
+    int page_index;
+    int timeout_ms;
+
+    if (info[0].IsObject())
+    {
+        pixImage = Napi::ObjectWrap<LeptonicaPix>::Unwrap(info[0].As<Napi::Object>());
+        if (!pixImage->_image)
+        {
+            Napi::TypeError::New(env, "Image reference not found")
+                .ThrowAsJavaScriptException();
+        }
+    }
+
+    if (info[1].IsNumber())
+    {
+        page_index = info[1].As<Napi::Number>().Int32Value();
+    }
+
+    if (info[2].IsString())
+    {
+        input_image = info[2].As<Napi::String>().Utf8Value();
+    }
+
+    if (info[4].IsNumber())
+    {
+        timeout_ms = info[4].As<Napi::Number>().Int32Value();
+    }
+
+    if (info[5].IsObject())
+    {
+        renderer = Napi::ObjectWrap<PdfRenderer>::Unwrap(info[5].As<Napi::Object>());
+    }
+    else
+    {
+        Napi::TypeError::New(env, "No PDF Renderer found.")
+            .ThrowAsJavaScriptException();
+        return;
+    }
+    // const char *input_image = "/Users/manuelruck/Desktop/image.png";
+    const char *retry_config = nullptr;
+
+    renderer->_renderer->BeginDocument("Document");
+    bool succeed = this->_api->ProcessPage(pixImage->_image, page_index, input_image.c_str(),
+                                           retry_config, timeout_ms,
+                                           renderer->_renderer);
+
+    if (!succeed)
+    {
+        Napi::TypeError::New(env, "Error during processing.")
+            .ThrowAsJavaScriptException();
+    }
+    return;
+}
+
 void Tesseract::SetImage(const Napi::CallbackInfo &info)
 {
     Napi::Env env = info.Env();
@@ -158,6 +220,7 @@ Napi::Object Tesseract::Initialize(Napi::Env env, Napi::Object exports)
                                           Tesseract::InstanceMethod("Init", &Tesseract::Init),
                                           Tesseract::InstanceMethod("SetImage", &Tesseract::SetImage),
                                           Tesseract::InstanceMethod("ProcessPages", &Tesseract::ProcessPages),
+                                          Tesseract::InstanceMethod("ProcessPage", &Tesseract::ProcessPage),
                                           Tesseract::InstanceMethod("getUTF8Text", &Tesseract::GetUTF8Text),
                                           Tesseract::InstanceMethod("End", &Tesseract::End),
                                       });

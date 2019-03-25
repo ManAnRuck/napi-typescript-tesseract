@@ -2,3 +2,6 @@ build
 dist
 node_modules
 /test_pdf.pdf
+/.vscode/ipch
+
+test_*.pdf

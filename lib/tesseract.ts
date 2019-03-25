@@ -1,5 +1,6 @@
 import { dirname, basename } from "path";
 import gunzip from "./gunzip";
+import Image = require("./image");
 
 const buildType = require("fs")
   .readdirSync(require("path").join(dirname(dirname(__dirname)), "build"))
@@ -9,7 +10,7 @@ const addon = require(`../../build/${buildType}/tesseract-native`);
 
 interface ITesseractNative {
   Init(dataPath?: string, language?: string): void;
-  SetImage(image: any): void;
+  SetImage(image: Image): void;
   getUTF8Text(): string;
   End(): void;
   ProcessPages(
@@ -17,6 +18,14 @@ interface ITesseractNative {
     retryConfig: any,
     renderer: any,
     timeout: number
+  ): boolean;
+  ProcessPage(
+    image: Image,
+    pageIndex: number,
+    imagePath: string,
+    retryConfig: any,
+    timeout: number,
+    renderer: any
   ): boolean;
 }
 
@@ -40,7 +49,7 @@ class Tesseract {
     return this._addonInstance.Init(tessDataPath, language);
   }
 
-  SetImage(image: any) {
+  SetImage(image: Image) {
     return this._addonInstance.SetImage(image);
   }
 
@@ -64,6 +73,31 @@ class Tesseract {
     renderer: any;
   }) {
     return this._addonInstance.ProcessPages(
+      imagePath,
+      retryConfig,
+      timeout,
+      renderer
+    );
+  }
+
+  ProcessPage({
+    image,
+    pageIndex,
+    imagePath,
+    retryConfig = null,
+    timeout = 5000,
+    renderer
+  }: {
+    image: Image;
+    pageIndex: number;
+    imagePath: string;
+    retryConfig?: any;
+    timeout?: number;
+    renderer: any;
+  }) {
+    return this._addonInstance.ProcessPage(
+      image,
+      pageIndex,
       imagePath,
       retryConfig,
       timeout,

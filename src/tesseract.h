@@ -12,6 +12,7 @@ public:
   Napi::Value GetUTF8Text(const Napi::CallbackInfo &);
   void SetImage(const Napi::CallbackInfo &);
   void ProcessPages(const Napi::CallbackInfo &);
+  void ProcessPage(const Napi::CallbackInfo &);
   void End(const Napi::CallbackInfo &);
 
   static Napi::Function GetClass(Napi::Env);

@@ -38,6 +38,23 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "typeinfo": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "__locale": "cpp",
+        "__mutex_base": "cpp",
+        "__threading_support": "cpp",
+        "bitset": "cpp",
+        "chrono": "cpp",
+        "cstdarg": "cpp",
+        "ctime": "cpp",
+        "ios": "cpp",
+        "iostream": "cpp",
+        "istream": "cpp",
+        "locale": "cpp",
+        "mutex": "cpp",
+        "ostream": "cpp",
+        "ratio": "cpp",
+        "streambuf": "cpp",
+        "system_error": "cpp",
+        "thread": "cpp"
     }
 }
